@@ -56,6 +56,7 @@ var _effects: Array[Dictionary] = []
 var _clock := 0.0
 ## Incremented per tap so a superseded walk does not act on arrival.
 var _request := 0
+var _last_press_frame := -1
 
 
 func _ready() -> void:
@@ -82,8 +83,14 @@ func _place_player() -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	# Mouse clicks arrive as touches too (emulate_touch_from_mouse), so only touch is handled.
-	if event is InputEventScreenTouch and event.pressed:
+	# A finger on Android arrives as an emulated left mouse press (emulate_mouse_from_touch),
+	# and a desktop click is a real one, so handling the mouse press covers both exactly once.
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		# With touch emulation on, one click can reach here twice in the same frame.
+		var frame := Engine.get_process_frames()
+		if frame == _last_press_frame:
+			return
+		_last_press_frame = frame
 		var cell := Vector2i((event.position / TILE_SIZE).floor()) - Vector2i(BORDER, BORDER)
 		if allotment != null and allotment.in_bounds(cell.x, cell.y):
 			request_action(cell.x, cell.y)
