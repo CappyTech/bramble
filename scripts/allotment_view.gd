@@ -40,15 +40,52 @@ var allotment: Allotment:
 var tool: Tool = Tool.PLANT
 var selected_crop: CropDef
 
+## Short feedback animations: harvesting shows the farmer crouching over the tile,
+## watering shows the Farm pack's bucket icon filling. Each entry is
+## {kind: Tool, cell: Vector2i, start: float (seconds), duration: float}.
+const HARVEST_DURATION := 0.7
+const WATER_DURATION := 0.5
+const WATER_FRAMES := 4
+const WATER_ICON_SCALE := 4
+
 var _farm_sheet: Texture2D
 var _crop_sheet: Texture2D
+var _harvest_sheet: Texture2D
+var _action_sheet: Texture2D
+var _effects: Array[Dictionary] = []
 
 
 func _ready() -> void:
 	_farm_sheet = Minifantasy.farm_tileset()
 	_crop_sheet = Minifantasy.crop_sheet()
+	_harvest_sheet = Minifantasy.harvest_sheet()
+	_action_sheet = Minifantasy.action_sheet()
+	set_process(false)
 	if not has_sprites():
 		print("AllotmentView: Minifantasy sheets missing, drawing placeholder shapes")
+
+
+func _process(_delta: float) -> void:
+	var now := _now()
+	_effects = _effects.filter(func(effect: Dictionary) -> bool:
+		return now - float(effect.start) < float(effect.duration))
+	if _effects.is_empty():
+		set_process(false)
+	queue_redraw()
+
+
+func _now() -> float:
+	return Time.get_ticks_msec() / 1000.0
+
+
+func _play_effect(kind: Tool, x: int, y: int) -> void:
+	var sheet := _harvest_sheet if kind == Tool.HARVEST else _action_sheet
+	if sheet == null:
+		return
+	var duration := HARVEST_DURATION if kind == Tool.HARVEST else WATER_DURATION
+	_effects.append({"kind": kind, "cell": Vector2i(x, y), "start": _now(), "duration": duration})
+	set_process(true)
+	queue_redraw()
 
 
 func has_sprites() -> bool:
@@ -69,9 +106,11 @@ func _apply_tool(x: int, y: int) -> void:
 		Tool.PLANT:
 			allotment.plant(x, y, selected_crop)
 		Tool.WATER:
-			allotment.water(x, y)
+			if allotment.water(x, y):
+				_play_effect(Tool.WATER, x, y)
 		Tool.HARVEST:
-			allotment.harvest(x, y)
+			if allotment.harvest(x, y) > 0:
+				_play_effect(Tool.HARVEST, x, y)
 
 
 func _draw() -> void:
@@ -85,6 +124,25 @@ func _draw() -> void:
 	for y in allotment.height:
 		for x in allotment.width:
 			_draw_plant(x, y, allotment.tile_at(x, y))
+	for effect in _effects:
+		_draw_effect(effect)
+
+
+func _draw_effect(effect: Dictionary) -> void:
+	var cell: Vector2i = effect.cell
+	var rect := _tile_rect(cell.x, cell.y)
+	var progress := clampf((_now() - float(effect.start)) / float(effect.duration), 0.0, 0.999)
+	if effect.kind == Tool.HARVEST:
+		# The 32x32 cell is centred on the character, so centre it on the tile.
+		var frame := int(progress * Minifantasy.HARVEST_FRAMES)
+		var cell_size := Vector2.ONE * Minifantasy.HARVEST_CELL * PIXEL_SCALE
+		var dest := Rect2(rect.get_center() - cell_size * 0.5, cell_size)
+		draw_texture_rect_region(_harvest_sheet, dest, Minifantasy.harvest_frame_region(frame))
+	else:
+		var frame := int(progress * WATER_FRAMES)
+		var icon_size := Vector2.ONE * Minifantasy.ACTION_FRAME * WATER_ICON_SCALE
+		var dest := Rect2(rect.get_center() - icon_size * 0.5 - Vector2(0, TILE_SIZE * 0.5), icon_size)
+		draw_texture_rect_region(_action_sheet, dest, Minifantasy.action_frame_region(Minifantasy.Action.WATER, frame))
 
 
 func _tile_rect(x: int, y: int) -> Rect2:

@@ -12,6 +12,14 @@ const FARM_TILESET := FARM_DIR + "Tileset/Minifantasy_FarmTileset.png"
 const CROP_SHEET := FARM_DIR + "Crops/Minifantasy_FarmSeedsAndCrops.png"
 const ACTION_SHEET := FARM_DIR + "Actions/Minifantasy_FarmActionInProgress(16x16).png"
 const PLAINS_TILESET := PLAINS_DIR + "Tileset/Minifantasy_ForgottenPlainsTiles.png"
+const CRAFTING_DIR := DIR + "crafting_1/Minifantasy_CraftingAndProfessions_v1.0/Minifantasy_CraftingAndProfessions_Assets/"
+const HARVEST_SHEET := CRAFTING_DIR + "Gathering_Professions/Harvesting/_Characters/Minifantasy_CraftingAndProfessionsHarvestAnimation_human.png"
+
+## Harvest animation sheet: 32x32 cells, six frames per row (column 0 standing),
+## one row per facing direction. Row 0 faces the camera.
+const HARVEST_CELL := 32
+const HARVEST_FRAMES := 6
+const HARVEST_ROW_FRONT := 0
 
 ## Farm tileset: single horizontal furrow rows; the three rows are hydration states
 ## (y 104 dry, 112 moist, 120 wet). The plain dirt tiles at x 48 are texture
@@ -44,14 +52,25 @@ static func plains_tileset() -> Texture2D:
 	return _texture(PLAINS_TILESET)
 
 
+static func harvest_sheet() -> Texture2D:
+	return _texture(HARVEST_SHEET)
+
+
+static func harvest_frame_region(frame: int, row: int = HARVEST_ROW_FRONT) -> Rect2:
+	return Rect2(frame * HARVEST_CELL, row * HARVEST_CELL, HARVEST_CELL, HARVEST_CELL)
+
+
+static func action_frame_region(action: Action, frame: int) -> Rect2:
+	return Rect2(frame * ACTION_FRAME, action * ACTION_FRAME, ACTION_FRAME, ACTION_FRAME)
+
+
 static func available() -> bool:
 	return farm_tileset() != null and crop_sheet() != null and plains_tileset() != null
 
 
 ## Last (completed) frame of an action icon, scaled up with nearest filtering.
 static func action_icon(action: Action, scale: int) -> Texture2D:
-	var region := Rect2(3 * ACTION_FRAME, action * ACTION_FRAME, ACTION_FRAME, ACTION_FRAME)
-	return icon(action_sheet(), region, scale)
+	return icon(action_sheet(), action_frame_region(action, 3), scale)
 
 
 static func crop_icon(def: CropDef, scale: int) -> Texture2D:
@@ -80,5 +99,7 @@ static func _texture(path: String) -> Texture2D:
 	var texture: Texture2D = null
 	if ResourceLoader.exists(path):
 		texture = load(path) as Texture2D
-	_cache[path] = texture
+	# A miss is not cached: the editor may still be importing the sheet.
+	if texture != null:
+		_cache[path] = texture
 	return texture
