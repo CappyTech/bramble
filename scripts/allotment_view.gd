@@ -1,34 +1,32 @@
 class_name AllotmentView
 extends Control
 ## Draws the allotment grid and turns taps into actions.
-## Uses the Minifantasy Farm and Forgotten Plains sheets when they are on disk
-## (assets/minifantasy is gitignored, see its README) and falls back to coloured
-## shapes otherwise, so CI and fresh checkouts still run.
+## Uses the Minifantasy Farm sheets when they are on disk (see Minifantasy) and
+## falls back to coloured shapes otherwise, so CI and fresh checkouts still run.
 
 enum Tool { PLANT, WATER, HARVEST }
 
 ## 8 px source pixels drawn at 8x: a 10x7 tile view (plot plus border) fits 1280x720.
 const PIXEL_SCALE := 8
 const TILE_SIZE := 8 * PIXEL_SCALE
-## Grass tiles drawn around the plot.
+## Ring of tiles around the plot that carries the fence.
 const BORDER := 1
 
 const SOIL_DRY := Color(0.45, 0.31, 0.2)
 const SOIL_WET := Color(0.3, 0.2, 0.14)
-const GRASS := Color(0.42, 0.6, 0.25)
 const GRID_LINE := Color(0.2, 0.13, 0.08)
+const FENCE_LINE := Color(0.55, 0.35, 0.15)
 const RIPE_RING := Color(1.0, 0.9, 0.3)
 
-const MINIFANTASY_DIR := "res://assets/minifantasy/"
-const FARM_TILESET := MINIFANTASY_DIR + "farm/Minifantasy_Farm_v3.0/Minifantasy_Farm_Assets/Tileset/Minifantasy_FarmTileset.png"
-const CROP_SHEET := MINIFANTASY_DIR + "farm/Minifantasy_Farm_v3.0/Minifantasy_Farm_Assets/Crops/Minifantasy_FarmSeedsAndCrops.png"
-const PLAINS_TILESET := MINIFANTASY_DIR + "forgotten_plains/Minifantasy_ForgottenPlains_v3.6_Commercial_Version/Minifantasy_ForgottenPlains_Assets/Tileset/Minifantasy_ForgottenPlainsTiles.png"
-
-## Ploughed-field tiles on the farm sheet, vertical furrows, by hydration.
-const SOIL_DRY_REGION := Rect2(8, 16, 8, 8)
-const SOIL_WET_REGION := Rect2(24, 16, 8, 8)
-## Plain grass fill on the plains sheet.
-const GRASS_REGION := Rect2(24, 32, 8, 8)
+## Farm tileset fence pieces, taken from the 5x5 enclosure mock-up.
+const FENCE_TOP_LEFT := Rect2(400, 120, 8, 8)
+const FENCE_TOP := Rect2(408, 120, 8, 8)
+const FENCE_TOP_RIGHT := Rect2(432, 120, 8, 8)
+const FENCE_LEFT := Rect2(400, 128, 8, 8)
+const FENCE_RIGHT := Rect2(432, 128, 8, 8)
+const FENCE_BOTTOM_LEFT := Rect2(400, 152, 8, 8)
+const FENCE_BOTTOM := Rect2(408, 152, 8, 8)
+const FENCE_BOTTOM_RIGHT := Rect2(432, 152, 8, 8)
 
 var allotment: Allotment:
 	set(value):
@@ -44,19 +42,17 @@ var selected_crop: CropDef
 
 var _farm_sheet: Texture2D
 var _crop_sheet: Texture2D
-var _plains_sheet: Texture2D
 
 
 func _ready() -> void:
-	_farm_sheet = _try_load(FARM_TILESET)
-	_crop_sheet = _try_load(CROP_SHEET)
-	_plains_sheet = _try_load(PLAINS_TILESET)
-	if _farm_sheet == null or _crop_sheet == null or _plains_sheet == null:
+	_farm_sheet = Minifantasy.farm_tileset()
+	_crop_sheet = Minifantasy.crop_sheet()
+	if not has_sprites():
 		print("AllotmentView: Minifantasy sheets missing, drawing placeholder shapes")
 
 
 func has_sprites() -> bool:
-	return _farm_sheet != null and _crop_sheet != null and _plains_sheet != null
+	return _farm_sheet != null and _crop_sheet != null
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -81,7 +77,7 @@ func _apply_tool(x: int, y: int) -> void:
 func _draw() -> void:
 	if allotment == null:
 		return
-	_draw_grass()
+	_draw_fence()
 	for y in allotment.height:
 		for x in allotment.width:
 			_draw_soil(x, y, allotment.tile_at(x, y))
@@ -95,16 +91,28 @@ func _tile_rect(x: int, y: int) -> Rect2:
 	return Rect2(Vector2(x + BORDER, y + BORDER) * TILE_SIZE, Vector2.ONE * TILE_SIZE)
 
 
-func _draw_grass() -> void:
-	var cols := allotment.width + 2 * BORDER
-	var rows := allotment.height + 2 * BORDER
-	if _plains_sheet == null:
-		draw_rect(Rect2(Vector2.ZERO, Vector2(cols, rows) * TILE_SIZE), GRASS)
+func _draw_fence() -> void:
+	var right := allotment.width
+	var bottom := allotment.height
+	if _farm_sheet == null:
+		var inset := TILE_SIZE * 0.5
+		var outline := Rect2(Vector2.ONE * inset, size - Vector2.ONE * 2.0 * inset)
+		draw_rect(outline, FENCE_LINE, false, 6.0)
 		return
-	for y in rows:
-		for x in cols:
-			var rect := Rect2(Vector2(x, y) * TILE_SIZE, Vector2.ONE * TILE_SIZE)
-			draw_texture_rect_region(_plains_sheet, rect, GRASS_REGION)
+	_draw_piece(-1, -1, FENCE_TOP_LEFT)
+	_draw_piece(right, -1, FENCE_TOP_RIGHT)
+	_draw_piece(-1, bottom, FENCE_BOTTOM_LEFT)
+	_draw_piece(right, bottom, FENCE_BOTTOM_RIGHT)
+	for x in right:
+		_draw_piece(x, -1, FENCE_TOP)
+		_draw_piece(x, bottom, FENCE_BOTTOM)
+	for y in bottom:
+		_draw_piece(-1, y, FENCE_LEFT)
+		_draw_piece(right, y, FENCE_RIGHT)
+
+
+func _draw_piece(x: int, y: int, region: Rect2) -> void:
+	draw_texture_rect_region(_farm_sheet, _tile_rect(x, y), region)
 
 
 func _draw_soil(x: int, y: int, tile: PlotTile) -> void:
@@ -113,7 +121,8 @@ func _draw_soil(x: int, y: int, tile: PlotTile) -> void:
 		draw_rect(rect, SOIL_WET if tile.watered else SOIL_DRY)
 		draw_rect(rect, GRID_LINE, false, 2.0)
 		return
-	draw_texture_rect_region(_farm_sheet, rect, SOIL_WET_REGION if tile.watered else SOIL_DRY_REGION)
+	var region := Minifantasy.SOIL_WET_REGION if tile.watered else Minifantasy.SOIL_DRY_REGION
+	draw_texture_rect_region(_farm_sheet, rect, region)
 
 
 func _draw_plant(x: int, y: int, tile: PlotTile) -> void:
@@ -135,9 +144,3 @@ func _draw_plant(x: int, y: int, tile: PlotTile) -> void:
 		var icon_size := Vector2.ONE * TILE_SIZE * 0.5
 		var icon_rect := Rect2(rect.end - icon_size, icon_size)
 		draw_texture_rect_region(_crop_sheet, icon_rect, tile.crop.icon_region())
-
-
-static func _try_load(path: String) -> Texture2D:
-	if not ResourceLoader.exists(path):
-		return null
-	return load(path) as Texture2D

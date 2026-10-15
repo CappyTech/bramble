@@ -3,6 +3,8 @@ extends Control
 
 const GRID_WIDTH := 8
 const GRID_HEIGHT := 5
+## Upscale for 8 px and 16 px sheet icons shown in buttons.
+const ICON_SCALE := 3
 
 var allotment := Allotment.new(GRID_WIDTH, GRID_HEIGHT)
 var crops: Array[CropDef] = CropLibrary.all()
@@ -21,8 +23,15 @@ func _ready() -> void:
 	print("Bramble %s" % ProjectSettings.get_setting("application/config/version", "dev"))
 	view.allotment = allotment
 	for def in crops:
-		crop_select.add_item(def.display_name)
+		var icon := Minifantasy.crop_icon(def, ICON_SCALE)
+		if icon != null:
+			crop_select.add_icon_item(icon, def.display_name)
+		else:
+			crop_select.add_item(def.display_name)
 	crop_select.select(0)
+	plant_button.icon = Minifantasy.action_icon(Minifantasy.Action.PLANT, ICON_SCALE)
+	water_button.icon = Minifantasy.action_icon(Minifantasy.Action.WATER, ICON_SCALE)
+	harvest_button.icon = Minifantasy.action_icon(Minifantasy.Action.HARVEST, ICON_SCALE)
 	view.selected_crop = crops[0]
 	crop_select.item_selected.connect(func(index: int) -> void: view.selected_crop = crops[index])
 	plant_button.pressed.connect(func() -> void: view.tool = AllotmentView.Tool.PLANT)
