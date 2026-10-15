@@ -1,0 +1,31 @@
+name: Validate
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+env:
+  GODOT_VERSION: 4.6.3
+
+jobs:
+  validate:
+    name: Import and check project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: chickensoft-games/setup-godot@v2
+        with:
+          version: ${{ env.GODOT_VERSION }}
+          use-dotnet: false
+          include-templates: false
+
+      - name: Godot version
+        run: godot --version
+
+      - name: Import project
+        run: godot --headless --path . --import
+
+      - name: Check scenes and scripts
+        run: godot --headless --path . --script tests/ci_check.gd

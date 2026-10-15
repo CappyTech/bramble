@@ -1,0 +1,21 @@
+# Godot 4
+.godot/
+.import/
+export.cfg
+export_credentials.cfg
+*.tmp
+*.translation
+
+# Android gradle build template and outputs (installed per machine from the editor)
+android/
+build/
+*.aab
+*.apk
+*.keystore
+*.jks
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
