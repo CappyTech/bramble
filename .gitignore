@@ -19,3 +19,7 @@ build/
 Thumbs.db
 .vscode/
 .idea/
+
+# Licensed Minifantasy packs: never redistribute (see assets/minifantasy/README.md)
+assets/minifantasy/*
+!assets/minifantasy/README.md

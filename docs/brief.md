@@ -68,7 +68,8 @@ Living record of what is decided, what is only proposed, and what is still open.
   - monthly: committee meeting, bank repayment
   - seasonal: village show, frost, annual plot fee
   - deliberate scheduling clashes between these
-- Render scale for the 8x8 Minifantasy tiles on phone screens (3x or 4x) and whether a unifying
+- Render scale for the 8x8 Minifantasy tiles on phone screens (currently 8x on the 1280x720 canvas,
+  which is not a decision) and whether a unifying
   custom palette is applied over the packs.
 - Where the licensed asset files live: gitignored `assets/minifantasy/`, or a private repo.
 - Modern British setting, as opposed to fantasy-rustic.

@@ -5,9 +5,9 @@ extends RefCounted
 
 static func all() -> Array[CropDef]:
 	return [
-		_make(&"radish", "Radish", [1, 1, 1], 3, Color(0.85, 0.2, 0.3), &"brassica"),
-		_make(&"lettuce", "Lettuce", [2, 2, 2], 1, Color(0.45, 0.8, 0.3), &"leaf"),
-		_make(&"potato", "Potato", [3, 3, 4], 4, Color(0.8, 0.7, 0.4), &"root"),
+		_make(&"radish", "Radish", [1, 1, 1], 3, Color(0.85, 0.2, 0.3), &"brassica", Vector2i(2, 1)),
+		_make(&"lettuce", "Lettuce", [2, 2, 2], 1, Color(0.45, 0.8, 0.3), &"leaf", Vector2i(1, 4)),
+		_make(&"potato", "Potato", [3, 3, 4], 4, Color(0.8, 0.7, 0.4), &"root", Vector2i(2, 0)),
 	]
 
 
@@ -19,7 +19,8 @@ static func find(id: StringName) -> CropDef:
 
 
 static func _make(id: StringName, display_name: String, stage_days: Array,
-		yield_amount: int, colour: Color, rotation_group: StringName) -> CropDef:
+		yield_amount: int, colour: Color, rotation_group: StringName,
+		sheet_cell: Vector2i) -> CropDef:
 	var def := CropDef.new()
 	def.id = id
 	def.display_name = display_name
@@ -27,4 +28,5 @@ static func _make(id: StringName, display_name: String, stage_days: Array,
 	def.yield_amount = yield_amount
 	def.colour = colour
 	def.rotation_group = rotation_group
+	def.sheet_cell = sheet_cell
 	return def
