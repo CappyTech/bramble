@@ -39,7 +39,19 @@ Living record of what is decided, what is only proposed, and what is still open.
 
 ### Art
 - Artwork is the main hindrance. Keep the art workload low.
-- For now: placeholder shapes and colours only. Sourcing (packs, generated, commissioned) is undecided.
+- Source: **Minifantasy** by Krishna Palacio (https://krishna-palacio.itch.io/), 8x8 pixel art.
+  Decided 2026-10-15. The owner already holds most of the collection; packs most relevant here:
+  Farm (crops in growth stages, field hydration states, fences, action icons), Wildlife,
+  Forgotten Plains (free; grass and ground), Towns I and II, Builders, Crafting And Professions
+  I and II (work animations), A Myriad Of NPCs (layered character generator), User Interface,
+  Creatures, Maps, Ancient Forests, Tiny Overworld I and II.
+- Not owned but on-theme: Plants & Foliage, Meadow Of Seasons, Modern Town, UI Overhaul,
+  Portrait Generator.
+- Licence (per pack page): commercial use and editing allowed; redistribution of the assets, altered
+  or not, is forbidden; Krishna Palacio must be credited in the game credits and sent a link to the
+  finished project. Consequence: the asset files must never sit in a public repository. See open
+  question 3.
+- Until the packs are imported, placeholder shapes and colours remain acceptable.
 
 ### Publishing and tooling
 - Commercial release on Google Play.
@@ -56,15 +68,17 @@ Living record of what is decided, what is only proposed, and what is still open.
   - monthly: committee meeting, bank repayment
   - seasonal: village show, frost, annual plot fee
   - deliberate scheduling clashes between these
-- Art sources: 16×16 pixel-art asset packs unified by a custom palette.
+- Render scale for the 8x8 Minifantasy tiles on phone screens (3x or 4x) and whether a unifying
+  custom palette is applied over the packs.
+- Where the licensed asset files live: gitignored `assets/minifantasy/`, or a private repo.
 - Modern British setting, as opposed to fantasy-rustic.
 - Additional MCP tooling: an ADB/Android MCP server for on-device screenshots; a Godot docs server.
 - Screen orientation: the scaffold is set to landscape as a placeholder; not decided.
 
 ## Open questions
 1. Time within a day: real-time ticking, fixed costs per action, or a hybrid? (Explicitly undecided.)
-2. Art sourcing: asset packs, generated art, commissioned art, or a mix?
-3. Monetisation model: paid app, free with in-app purchases, or ads?
-4. Repo visibility and licence for a commercial project (Cairn uses AGPL-3.0; that may not suit).
-5. Screen orientation: portrait or landscape?
-6. Google Play signing: upload keystore and who holds it.
+2. Monetisation model: paid app, free with in-app purchases, or ads?
+3. Repo visibility and licence for a commercial project (Cairn uses AGPL-3.0; that may not suit).
+   Minifantasy assets cannot be redistributed, so a public repo must exclude them.
+4. Screen orientation: portrait or landscape?
+5. Google Play signing: upload keystore and who holds it.

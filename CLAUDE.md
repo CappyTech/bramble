@@ -11,7 +11,8 @@ Proposals in that file are suggestions, not decisions. Open questions are open.
 - Android package ID: `uk.cappylabs.bramble` (fixed; never change).
 - Layout: `scenes/` for `.tscn`, `scripts/` for `.gd`, `assets/` for art and audio, `tests/` for
   headless checks, `docs/` for design notes, `addons/` for editor plugins.
-- Art is the main hindrance. Use placeholder shapes/colours until art sourcing is decided.
+- Art: Minifantasy 8x8 pixel art (Krishna Palacio), licensed and non-redistributable; never commit the
+  asset files to a public repo. Placeholder shapes/colours are fine until packs are imported.
 - Keep `export_presets.cfg` committed, but never commit keystores or `export_credentials.cfg`.
 
 ## Validation
