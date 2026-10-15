@@ -19,8 +19,8 @@ var _sprite: AnimatedSprite2D
 
 
 func _ready() -> void:
-	var idle := Minifantasy.townsfolk_idle()
-	var walk := Minifantasy.townsfolk_walk()
+	var idle := Minifantasy.human_idle()
+	var walk := Minifantasy.human_walk()
 	var harvest := Minifantasy.harvest_sheet()
 	if idle == null or walk == null or harvest == null:
 		print("Player: character sheets missing, drawing a placeholder disc")

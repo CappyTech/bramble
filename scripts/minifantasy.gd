@@ -16,9 +16,10 @@ const CRAFTING_DIR := DIR + "crafting_1/Minifantasy_CraftingAndProfessions_v1.0/
 const HARVEST_SHEET := CRAFTING_DIR + "Gathering_Professions/Harvesting/_Characters/Minifantasy_CraftingAndProfessionsHarvestAnimation_human.png"
 
 const CREATURES_DIR := DIR + "creatures/Minifantasy_Creatures_v3.3_Commercial_Version/Minifantasy_Creatures_Assets/"
-const TOWNSFOLK_DIR := CREATURES_DIR + "Base_Humanoids/Human/Human_Townsfolk/"
-const TOWNSFOLK_IDLE := TOWNSFOLK_DIR + "HumanTownsfolkIdle.png"
-const TOWNSFOLK_WALK := TOWNSFOLK_DIR + "HumanTownsfolkWalk.png"
+## Base Human: the same character the Crafting and Professions animations use.
+const HUMAN_DIR := CREATURES_DIR + "Base_Humanoids/Human/Base_Human/"
+const HUMAN_IDLE := HUMAN_DIR + "HumanIdle.png"
+const HUMAN_WALK := HUMAN_DIR + "HumanWalk.png"
 
 ## Character sheets share one layout: 32x32 cells, one row per facing direction,
 ## frames left to right. Idle has 16 frames, walk 4, both at 200 ms per frame.
@@ -70,12 +71,12 @@ static func harvest_sheet() -> Texture2D:
 	return _texture(HARVEST_SHEET)
 
 
-static func townsfolk_idle() -> Texture2D:
-	return _texture(TOWNSFOLK_IDLE)
+static func human_idle() -> Texture2D:
+	return _texture(HUMAN_IDLE)
 
 
-static func townsfolk_walk() -> Texture2D:
-	return _texture(TOWNSFOLK_WALK)
+static func human_walk() -> Texture2D:
+	return _texture(HUMAN_WALK)
 
 
 ## Adds one row of a character sheet to a SpriteFrames as a named animation.
