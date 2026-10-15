@@ -17,6 +17,11 @@ var crops: Array[CropDef] = CropLibrary.all()
 @onready var harvest_button: Button = %HarvestButton
 @onready var crop_select: OptionButton = %CropSelect
 @onready var sleep_button: Button = %SleepButton
+@onready var night: ColorRect = %Night
+
+const NIGHT_FADE_SECONDS := 0.4
+const NIGHT_HOLD_SECONDS := 0.3
+var _sleeping := false
 
 
 func _ready() -> void:
@@ -37,9 +42,27 @@ func _ready() -> void:
 	plant_button.pressed.connect(func() -> void: view.tool = AllotmentView.Tool.PLANT)
 	water_button.pressed.connect(func() -> void: view.tool = AllotmentView.Tool.WATER)
 	harvest_button.pressed.connect(func() -> void: view.tool = AllotmentView.Tool.HARVEST)
-	sleep_button.pressed.connect(allotment.sleep)
+	sleep_button.pressed.connect(_sleep)
 	allotment.changed.connect(_refresh_hud)
 	_refresh_hud()
+
+
+## Fade to night, advance the day, fade back in.
+func _sleep() -> void:
+	if _sleeping:
+		return
+	_sleeping = true
+	sleep_button.disabled = true
+	var tween := create_tween()
+	tween.tween_property(night, "color:a", 1.0, NIGHT_FADE_SECONDS)
+	await tween.finished
+	allotment.sleep()
+	await get_tree().create_timer(NIGHT_HOLD_SECONDS, false).timeout
+	tween = create_tween()
+	tween.tween_property(night, "color:a", 0.0, NIGHT_FADE_SECONDS)
+	await tween.finished
+	sleep_button.disabled = false
+	_sleeping = false
 
 
 func _refresh_hud() -> void:

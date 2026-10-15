@@ -15,11 +15,25 @@ const PLAINS_TILESET := PLAINS_DIR + "Tileset/Minifantasy_ForgottenPlainsTiles.p
 const CRAFTING_DIR := DIR + "crafting_1/Minifantasy_CraftingAndProfessions_v1.0/Minifantasy_CraftingAndProfessions_Assets/"
 const HARVEST_SHEET := CRAFTING_DIR + "Gathering_Professions/Harvesting/_Characters/Minifantasy_CraftingAndProfessionsHarvestAnimation_human.png"
 
-## Harvest animation sheet: 32x32 cells, six frames per row (column 0 standing),
-## one row per facing direction. Row 0 faces the camera.
-const HARVEST_CELL := 32
+const CREATURES_DIR := DIR + "creatures/Minifantasy_Creatures_v3.3_Commercial_Version/Minifantasy_Creatures_Assets/"
+const TOWNSFOLK_DIR := CREATURES_DIR + "Base_Humanoids/Human/Human_Townsfolk/"
+const TOWNSFOLK_IDLE := TOWNSFOLK_DIR + "HumanTownsfolkIdle.png"
+const TOWNSFOLK_WALK := TOWNSFOLK_DIR + "HumanTownsfolkWalk.png"
+
+## Character sheets share one layout: 32x32 cells, one row per facing direction,
+## frames left to right. Idle has 16 frames, walk 4, both at 200 ms per frame.
+const ACTOR_CELL := 32
+const IDLE_FRAMES := 16
+const WALK_FRAMES := 4
+const ACTOR_FPS := 5.0
+enum Facing { RIGHT, LEFT, UP_RIGHT, UP_LEFT }
+
+## Harvest animation sheet: same cells, six frames per row (column 0 standing).
+## Row 0 faces the camera.
+const HARVEST_CELL := ACTOR_CELL
 const HARVEST_FRAMES := 6
 const HARVEST_ROW_FRONT := 0
+const HARVEST_FPS := 8.0
 
 ## Farm tileset: single horizontal furrow rows; the three rows are hydration states
 ## (y 104 dry, 112 moist, 120 wet). The plain dirt tiles at x 48 are texture
@@ -54,6 +68,27 @@ static func plains_tileset() -> Texture2D:
 
 static func harvest_sheet() -> Texture2D:
 	return _texture(HARVEST_SHEET)
+
+
+static func townsfolk_idle() -> Texture2D:
+	return _texture(TOWNSFOLK_IDLE)
+
+
+static func townsfolk_walk() -> Texture2D:
+	return _texture(TOWNSFOLK_WALK)
+
+
+## Adds one row of a character sheet to a SpriteFrames as a named animation.
+static func add_row_animation(frames: SpriteFrames, anim: StringName, sheet: Texture2D,
+		row: int, count: int, fps: float, loop: bool) -> void:
+	frames.add_animation(anim)
+	frames.set_animation_speed(anim, fps)
+	frames.set_animation_loop(anim, loop)
+	for i in count:
+		var atlas := AtlasTexture.new()
+		atlas.atlas = sheet
+		atlas.region = Rect2(i * ACTOR_CELL, row * ACTOR_CELL, ACTOR_CELL, ACTOR_CELL)
+		frames.add_frame(anim, atlas)
 
 
 static func harvest_frame_region(frame: int, row: int = HARVEST_ROW_FRONT) -> Rect2:

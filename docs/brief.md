@@ -23,6 +23,10 @@ Living record of what is decided, what is only proposed, and what is still open.
 - Time: the game progresses per day; the day ends when the player sleeps.
 - Growing depth: start light (plant, water, wait, harvest) but structure data so soil, rotation,
   pests and frost can be added later.
+- Player avatar (decided 2026-10-15): the player is a visible character on the plot. Tapping a tile
+  with a tool selected walks the character there, plays a working pose, and only then applies the
+  action. Sleeping fades to night and back. This says nothing about how time passes within a day
+  (open question 1).
 
 ### Family system
 - At the start the player chooses a family. Examples:
