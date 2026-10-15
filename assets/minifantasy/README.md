@@ -11,4 +11,8 @@ and unpack each one into its own subfolder here, e.g.
     assets/minifantasy/farm/
     assets/minifantasy/forgotten_plains/
 
+Folder names used so far: farm, forgotten_plains, wildlife, creatures, builders,
+crafting_1, crafting_2, maps, mounts, ships_and_docks, weapons. Each holds the zip's
+own top-level folder unchanged, so sheet paths in scripts/minifantasy.gd stay valid.
+
 Credit "Krishna Palacio" in the game credits and send a link on release (licence terms).
