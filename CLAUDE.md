@@ -16,7 +16,8 @@ Proposals in that file are suggestions, not decisions. Open questions are open.
 - Keep `export_presets.cfg` committed, but never commit keystores or `export_credentials.cfg`.
 
 ## Validation
-CI runs `godot --headless --path . --import` then `godot --headless --path . --script tests/ci_check.gd`.
+CI runs `godot --headless --path . --import`, then `godot --headless --path . --script tests/ci_check.gd`,
+then `godot --headless --path . --script tests/test_allotment.gd` (model unit tests).
 Run the same locally before pushing.
 
 ## Tooling

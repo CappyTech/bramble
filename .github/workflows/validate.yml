@@ -29,3 +29,6 @@ jobs:
 
       - name: Check scenes and scripts
         run: godot --headless --path . --script tests/ci_check.gd
+
+      - name: Run unit tests
+        run: godot --headless --path . --script tests/test_allotment.gd
