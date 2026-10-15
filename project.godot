@@ -12,13 +12,14 @@ config_version=5
 
 config/name="Bramble"
 config/description="An allotment management game. Codename Bramble; final title TBC."
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.svg"
 
 [autoload]
 
 MCPGameBridge="res://addons/godot_mcp/game_bridge/mcp_game_bridge.gd"
+App="*res://scripts/app.gd"
 
 [display]
 

@@ -17,7 +17,7 @@ Proposals in that file are suggestions, not decisions. Open questions are open.
 
 ## Validation
 CI runs `godot --headless --path . --import`, then `godot --headless --path . --script tests/ci_check.gd`,
-then `godot --headless --path . --script tests/test_allotment.gd` (model unit tests).
+then `godot --headless --path . --script tests/test_allotment.gd` and `tests/test_save.gd` (unit tests).
 Run the same locally before pushing.
 
 ## Tooling

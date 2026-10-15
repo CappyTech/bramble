@@ -16,6 +16,7 @@ var facing: Minifantasy.Facing = Minifantasy.Facing.RIGHT
 var _target: Vector2
 var _walking := false
 var _sprite: AnimatedSprite2D
+var _shadow: AnimatedSprite2D
 
 
 func _ready() -> void:
@@ -25,17 +26,35 @@ func _ready() -> void:
 	if idle == null or walk == null or harvest == null:
 		print("Player: character sheets missing, drawing a placeholder disc")
 		return
+	# The shadow sheets share the character sheets' layout, so the same frame
+	# names drive both sprites in step.
+	var shadow_idle := Minifantasy.human_shadow_idle()
+	var shadow_walk := Minifantasy.human_shadow_walk()
+	var shadow_harvest := Minifantasy.harvest_shadow_sheet()
+	if shadow_idle != null and shadow_walk != null and shadow_harvest != null:
+		_shadow = _make_sprite(_build_frames(shadow_idle, shadow_walk, shadow_harvest))
+		_shadow.visible = App.shadows
+		App.settings_changed.connect(func() -> void: _shadow.visible = App.shadows)
+	_sprite = _make_sprite(_build_frames(idle, walk, harvest))
+	_play_idle()
+
+
+func _build_frames(idle: Texture2D, walk: Texture2D, harvest: Texture2D) -> SpriteFrames:
 	var frames := SpriteFrames.new()
 	frames.remove_animation(&"default")
 	for row in 4:
 		Minifantasy.add_row_animation(frames, "idle_%d" % row, idle, row, Minifantasy.IDLE_FRAMES, Minifantasy.ACTOR_FPS, true)
 		Minifantasy.add_row_animation(frames, "walk_%d" % row, walk, row, Minifantasy.WALK_FRAMES, Minifantasy.ACTOR_FPS, true)
 	Minifantasy.add_row_animation(frames, &"act", harvest, Minifantasy.HARVEST_ROW_FRONT, Minifantasy.HARVEST_FRAMES, Minifantasy.HARVEST_FPS, false)
-	_sprite = AnimatedSprite2D.new()
-	_sprite.sprite_frames = frames
-	_sprite.scale = Vector2.ONE * AllotmentView.PIXEL_SCALE
-	add_child(_sprite)
-	_play_idle()
+	return frames
+
+
+func _make_sprite(frames: SpriteFrames) -> AnimatedSprite2D:
+	var sprite := AnimatedSprite2D.new()
+	sprite.sprite_frames = frames
+	sprite.scale = Vector2.ONE * AllotmentView.PIXEL_SCALE
+	add_child(sprite)
+	return sprite
 
 
 func _draw() -> void:
@@ -78,6 +97,8 @@ func perform(tool: AllotmentView.Tool) -> void:
 		await get_tree().create_timer(WATER_ACT_SECONDS, false).timeout
 	else:
 		_sprite.play(&"act")
+		if _shadow != null:
+			_shadow.play(&"act")
 		await _sprite.animation_finished
 	_play_idle()
 
@@ -98,3 +119,5 @@ func _play_idle() -> void:
 func _play(anim: StringName) -> void:
 	if _sprite != null and _sprite.animation != anim:
 		_sprite.play(anim)
+		if _shadow != null:
+			_shadow.play(anim)

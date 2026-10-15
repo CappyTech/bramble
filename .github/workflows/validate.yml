@@ -32,3 +32,6 @@ jobs:
 
       - name: Run unit tests
         run: godot --headless --path . --script tests/test_allotment.gd
+
+      - name: Run save tests
+        run: godot --headless --path . --script tests/test_save.gd

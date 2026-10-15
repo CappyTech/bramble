@@ -9,6 +9,11 @@ const FARM_DIR := DIR + "farm/Minifantasy_Farm_v3.0/Minifantasy_Farm_Assets/"
 const PLAINS_DIR := DIR + "forgotten_plains/Minifantasy_ForgottenPlains_v3.6_Commercial_Version/Minifantasy_ForgottenPlains_Assets/"
 
 const FARM_TILESET := FARM_DIR + "Tileset/Minifantasy_FarmTileset.png"
+const FARM_TILESET_SHADOW := FARM_DIR + "Tileset/Minifantasy_FarmTilesetShadowLayer.png"
+const FARM_PROPS := FARM_DIR + "Props/Minifantasy_FarmProps.png"
+const FARM_PROPS_SHADOW := FARM_DIR + "Props/Minifantasy_FarmPropsShadows.png"
+const PLAINS_PROPS := PLAINS_DIR + "props/Minifantasy_ForgottenPlainsProps.png"
+const PLAINS_PROPS_SHADOW := PLAINS_DIR + "props/Minifantasy_ForgottenPlainsPropsShadows.png"
 const CROP_SHEET := FARM_DIR + "Crops/Minifantasy_FarmSeedsAndCrops.png"
 const ACTION_SHEET := FARM_DIR + "Actions/Minifantasy_FarmActionInProgress(16x16).png"
 const PLAINS_TILESET := PLAINS_DIR + "Tileset/Minifantasy_ForgottenPlainsTiles.png"
@@ -20,6 +25,9 @@ const CREATURES_DIR := DIR + "creatures/Minifantasy_Creatures_v3.3_Commercial_Ve
 const HUMAN_DIR := CREATURES_DIR + "Base_Humanoids/Human/Base_Human/"
 const HUMAN_IDLE := HUMAN_DIR + "HumanIdle.png"
 const HUMAN_WALK := HUMAN_DIR + "HumanWalk.png"
+const HUMAN_SHADOW_IDLE := HUMAN_DIR + "_Shadows/ShadowHumanoidIdle.png"
+const HUMAN_SHADOW_WALK := HUMAN_DIR + "_Shadows/ShadowHumanoidWalk.png"
+const HARVEST_SHADOW_SHEET := CRAFTING_DIR + "Gathering_Professions/Harvesting/_Characters/Minifantasy_CraftingAndProfessionsHarvestAnimationShadow.png"
 
 ## Character sheets share one layout: 32x32 cells, one row per facing direction,
 ## frames left to right. Idle has 16 frames, walk 4, both at 200 ms per frame.
@@ -77,6 +85,38 @@ static func human_idle() -> Texture2D:
 
 static func human_walk() -> Texture2D:
 	return _texture(HUMAN_WALK)
+
+
+static func human_shadow_idle() -> Texture2D:
+	return _texture(HUMAN_SHADOW_IDLE)
+
+
+static func human_shadow_walk() -> Texture2D:
+	return _texture(HUMAN_SHADOW_WALK)
+
+
+static func harvest_shadow_sheet() -> Texture2D:
+	return _texture(HARVEST_SHADOW_SHEET)
+
+
+static func farm_tileset_shadow() -> Texture2D:
+	return _texture(FARM_TILESET_SHADOW)
+
+
+static func farm_props() -> Texture2D:
+	return _texture(FARM_PROPS)
+
+
+static func farm_props_shadow() -> Texture2D:
+	return _texture(FARM_PROPS_SHADOW)
+
+
+static func plains_props() -> Texture2D:
+	return _texture(PLAINS_PROPS)
+
+
+static func plains_props_shadow() -> Texture2D:
+	return _texture(PLAINS_PROPS_SHADOW)
 
 
 ## Adds one row of a character sheet to a SpriteFrames as a named animation.

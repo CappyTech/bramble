@@ -50,6 +50,7 @@ var selected_crop: CropDef
 var player: Player
 
 var _farm_sheet: Texture2D
+var _farm_shadow_sheet: Texture2D
 var _crop_sheet: Texture2D
 var _action_sheet: Texture2D
 var _effects: Array[Dictionary] = []
@@ -61,8 +62,10 @@ var _last_press_frame := -1
 
 func _ready() -> void:
 	_farm_sheet = Minifantasy.farm_tileset()
+	_farm_shadow_sheet = Minifantasy.farm_tileset_shadow()
 	_crop_sheet = Minifantasy.crop_sheet()
 	_action_sheet = Minifantasy.action_sheet()
+	App.settings_changed.connect(queue_redraw)
 	player = Player.new()
 	add_child(player)
 	_place_player()
@@ -200,20 +203,30 @@ func _draw_fence() -> void:
 		var outline := Rect2(Vector2.ONE * inset, size - Vector2.ONE * 2.0 * inset)
 		draw_rect(outline, FENCE_LINE, false, 6.0)
 		return
-	_draw_piece(-1, -1, FENCE_TOP_LEFT)
-	_draw_piece(right, -1, FENCE_TOP_RIGHT)
-	_draw_piece(-1, bottom, FENCE_BOTTOM_LEFT)
-	_draw_piece(right, bottom, FENCE_BOTTOM_RIGHT)
+	# The shadow layer is aligned with the tileset, so the same regions give the
+	# fence's shadow; it goes under every piece.
+	if App.shadows and _farm_shadow_sheet != null:
+		_draw_fence_ring(_farm_shadow_sheet)
+	_draw_fence_ring(_farm_sheet)
+
+
+func _draw_fence_ring(sheet: Texture2D) -> void:
+	var right := allotment.width
+	var bottom := allotment.height
+	_draw_piece(sheet, -1, -1, FENCE_TOP_LEFT)
+	_draw_piece(sheet, right, -1, FENCE_TOP_RIGHT)
+	_draw_piece(sheet, -1, bottom, FENCE_BOTTOM_LEFT)
+	_draw_piece(sheet, right, bottom, FENCE_BOTTOM_RIGHT)
 	for x in right:
-		_draw_piece(x, -1, FENCE_TOP)
-		_draw_piece(x, bottom, FENCE_BOTTOM)
+		_draw_piece(sheet, x, -1, FENCE_TOP)
+		_draw_piece(sheet, x, bottom, FENCE_BOTTOM)
 	for y in bottom:
-		_draw_piece(-1, y, FENCE_LEFT)
-		_draw_piece(right, y, FENCE_RIGHT)
+		_draw_piece(sheet, -1, y, FENCE_LEFT)
+		_draw_piece(sheet, right, y, FENCE_RIGHT)
 
 
-func _draw_piece(x: int, y: int, region: Rect2) -> void:
-	draw_texture_rect_region(_farm_sheet, _tile_rect(x, y), region)
+func _draw_piece(sheet: Texture2D, x: int, y: int, region: Rect2) -> void:
+	draw_texture_rect_region(sheet, _tile_rect(x, y), region)
 
 
 func _draw_soil(x: int, y: int, tile: PlotTile) -> void:

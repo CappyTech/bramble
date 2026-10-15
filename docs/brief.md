@@ -57,6 +57,16 @@ Living record of what is decided, what is only proposed, and what is still open.
   question 3.
 - Until the packs are imported, placeholder shapes and colours remain acceptable.
 
+### Scenes, saving and settings (decided 2026-10-15)
+- Main menu is the entry scene: New game, Continue (disabled without a save), Settings, Quit.
+- One save slot in `user://save.json`. The game autosaves when the player sleeps and on
+  "Save and quit to menu" from the pause menu. New game does not delete the save until the
+  next autosave overwrites it.
+- Settings persist in `user://settings.cfg`. First toggle: shadows (the Minifantasy shadow
+  layers under characters, fence and props).
+- The garden scene holds the plot plus decorative props around it (trees, rocks, hay,
+  scarecrow, crates, water butt, flowers) drawn from the owned packs.
+
 ### Publishing and tooling
 - Commercial release on Google Play.
 - Godot MCP server: `satelliteoflove/godot-mcp` (playtesting with input injection and game-time

@@ -1,7 +1,7 @@
 extends SceneTree
 ## Headless sanity check run by CI:
 ##   godot --headless --path . --script tests/ci_check.gd
-## Loads the main scene and every .gd script under scripts/ so parse errors fail the build.
+## Loads every scene under scenes/ and every .gd script under scripts/ so parse errors fail the build.
 
 
 func _initialize() -> void:
@@ -14,7 +14,12 @@ func _initialize() -> void:
 		push_error("Main scene failed to load: %s" % main_scene)
 		failures += 1
 
-	for path in _collect_scripts("res://scripts"):
+	for path in _collect("res://scenes", ".tscn"):
+		if load(path) == null:
+			push_error("Scene failed to load: %s" % path)
+			failures += 1
+
+	for path in _collect("res://scripts", ".gd"):
 		var script := load(path) as GDScript
 		if script == null or not script.can_instantiate():
 			push_error("Script failed to load: %s" % path)
@@ -28,7 +33,7 @@ func _initialize() -> void:
 		quit(0)
 
 
-func _collect_scripts(dir_path: String) -> PackedStringArray:
+func _collect(dir_path: String, extension: String) -> PackedStringArray:
 	var found := PackedStringArray()
 	var dir := DirAccess.open(dir_path)
 	if dir == null:
@@ -38,8 +43,8 @@ func _collect_scripts(dir_path: String) -> PackedStringArray:
 	while name != "":
 		var full := dir_path.path_join(name)
 		if dir.current_is_dir():
-			found.append_array(_collect_scripts(full))
-		elif name.ends_with(".gd"):
+			found.append_array(_collect(full, extension))
+		elif name.ends_with(extension):
 			found.append(full)
 		name = dir.get_next()
 	return found
