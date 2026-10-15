@@ -12,7 +12,7 @@ Living record of what is decided, what is only proposed, and what is still open.
 
 ### Platform and engine
 - Target platform: Android.
-- Engine: Godot 4.6.x, GDScript.
+- Engine: Godot 4.7.x, GDScript. 4.7.2 is pinned in CI; decided 2026-10-15.
 - Dev machine: Windows.
 - Repo: `CappyTech/bramble` on GitHub.
 
@@ -67,5 +67,4 @@ Living record of what is decided, what is only proposed, and what is still open.
 3. Monetisation model: paid app, free with in-app purchases, or ads?
 4. Repo visibility and licence for a commercial project (Cairn uses AGPL-3.0; that may not suit).
 5. Screen orientation: portrait or landscape?
-6. Godot minor version: 4.6.3 is pinned in CI. Godot 4.7.2 is the current stable; upgrade or stay?
-7. Google Play signing: upload keystore and who holds it.
+6. Google Play signing: upload keystore and who holds it.

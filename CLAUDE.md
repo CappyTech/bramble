@@ -1,13 +1,13 @@
 # Bramble — notes for Claude Code
 
-Bramble is a 2D top-down allotment management game for Android, built in Godot 4.6 with GDScript.
+Bramble is a 2D top-down allotment management game for Android, built in Godot 4.7 with GDScript.
 
 ## Rule for this project: do not assume
 Anything not listed under **Decided** in `docs/brief.md` must be asked about before acting on it.
 Proposals in that file are suggestions, not decisions. Open questions are open.
 
 ## Conventions
-- Engine: Godot 4.6.x, GDScript, static typing (`var x: int`, `-> void`), tabs for indentation.
+- Engine: Godot 4.7.x (4.7.2 pinned in CI), GDScript, static typing (`var x: int`, `-> void`), tabs for indentation.
 - Android package ID: `uk.cappylabs.bramble` (fixed; never change).
 - Layout: `scenes/` for `.tscn`, `scripts/` for `.gd`, `assets/` for art and audio, `tests/` for
   headless checks, `docs/` for design notes, `addons/` for editor plugins.
